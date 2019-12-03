@@ -65,10 +65,8 @@ public class AnimationSettings extends SettingsPreferenceFragment implements
     private static final String PREF_TILE_ANIM_STYLE = "qs_tile_animation_style";
     private static final String PREF_TILE_ANIM_INTERPOLATOR = "qs_tile_animation_interpolator";
     private static final String PREF_TILE_ANIM_DURATION = "qs_tile_animation_duration";
-    private static final String SCREEN_OFF_ANIMATION = "screen_off_animation";
 
     private CustomSeekBarPreference mAnimDuration;
-    private ListPreference mScreenOffAnimation;
     private ListPreference mTileAnimationDuration;
     private ListPreference mTileAnimationInterpolator;
     private ListPreference mTileAnimationStyle;
@@ -95,13 +93,6 @@ public class AnimationSettings extends SettingsPreferenceFragment implements
         addPreferencesFromResource(R.xml.evolution_settings_animations);
 
         ContentResolver resolver = getActivity().getContentResolver();
-
-        mScreenOffAnimation = (ListPreference) findPreference(SCREEN_OFF_ANIMATION);
-        int screenOffStyle = Settings.System.getInt(resolver,
-                Settings.System.SCREEN_OFF_ANIMATION, 0);
-        mScreenOffAnimation.setValue(String.valueOf(screenOffStyle));
-        mScreenOffAnimation.setSummary(mScreenOffAnimation.getEntry());
-        mScreenOffAnimation.setOnPreferenceChangeListener(this);
 
         // QS animation
         mTileAnimationStyle = (ListPreference) findPreference(PREF_TILE_ANIM_STYLE);
@@ -220,14 +211,7 @@ public class AnimationSettings extends SettingsPreferenceFragment implements
 
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         ContentResolver resolver = getActivity().getContentResolver();
-        if (preference == mScreenOffAnimation) {
-            String value = (String) newValue;
-            Settings.System.putInt(resolver,
-                    Settings.System.SCREEN_OFF_ANIMATION, Integer.valueOf(value));
-            int valueIndex = mScreenOffAnimation.findIndexOfValue(value);
-            mScreenOffAnimation.setSummary(mScreenOffAnimation.getEntries()[valueIndex]);
-            return true;
-        } else if (preference == mTileAnimationStyle) {
+        if (preference == mTileAnimationStyle) {
             int tileAnimationStyle = Integer.valueOf((String) newValue);
             Settings.System.putIntForUser(getContentResolver(), Settings.System.ANIM_TILE_STYLE,
                     tileAnimationStyle, UserHandle.USER_CURRENT);
